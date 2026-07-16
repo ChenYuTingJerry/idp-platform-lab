@@ -1,0 +1,3 @@
+# Vendored CRD, rendered from the argo-cd Helm chart for envtest. Not hand-edited.
+# Mark as generated so GitHub collapses it in diffs and excludes it from language stats.
+test/testdata/crds/applications.yaml linguist-generated=true

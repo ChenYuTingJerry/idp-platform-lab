@@ -1,0 +1,41 @@
+# Base Deployment for the payments service. Two contracts with the idp
+# controller (see idp ADR-009):
+#   1. The Deployment name must equal the claim name (payments), so the
+#      controller's kustomize replicas override (name: payments) matches.
+#   2. The container image must be the literal placeholder "app", so the
+#      controller's kustomize images override (app=<image>) matches and replaces
+#      it with the image declared on the ServiceClaim.
+# The resources block is required: the team namespace has a ResourceQuota
+# (requests.cpu, requests.memory, limits.memory) and there is no LimitRange to
+# default them, so a pod without these would be rejected by the quota.
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: payments
+  labels:
+    app: payments
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: payments
+  template:
+    metadata:
+      labels:
+        app: payments
+    spec:
+      containers:
+        - name: payments
+          image: app
+          ports:
+            - containerPort: 80
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              memory: 128Mi
+          readinessProbe:
+            httpGet:
+              path: /
+              port: 80

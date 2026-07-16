@@ -1,0 +1,10 @@
+# Workload base for the "payments" service (team payments).
+# The idp controller points an ArgoCD Application at this path and injects the
+# image and replicas from the ServiceClaim as kustomize overrides. Do NOT pin
+# images: or replicas: here; those come from the Application (see idp ADR-009).
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml

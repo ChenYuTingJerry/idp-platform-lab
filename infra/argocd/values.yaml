@@ -1,0 +1,63 @@
+# ArgoCD Helm chart values — laptop-optimized for idp-platform-lab.
+# Chart version 9.5.7, ArgoCD 3.3.8.
+# Insecure server (Traefik handles TLS), Dex disabled, low resource limits.
+
+global:
+  domain: argocd.localhost
+
+server:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+configs:
+  params:
+    server.insecure: true
+
+dex:
+  enabled: false
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 256Mi
+
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 128Mi
+    limits:
+      memory: 512Mi
+
+applicationSet:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+
+redis:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 64Mi
+    limits:
+      memory: 128Mi
+
+notifications:
+  enabled: true
+  resources:
+    requests:
+      cpu: 50m
+      memory: 32Mi
+    limits:
+      memory: 64Mi

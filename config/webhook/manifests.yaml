@@ -1,0 +1,45 @@
+---
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingWebhookConfiguration
+metadata:
+  name: validating-webhook-configuration
+webhooks:
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-platform-idp-io-v1alpha1-serviceclaim
+  failurePolicy: Fail
+  name: vserviceclaim-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - platform.idp.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    resources:
+    - serviceclaims
+  sideEffects: None
+- admissionReviewVersions:
+  - v1
+  clientConfig:
+    service:
+      name: webhook-service
+      namespace: system
+      path: /validate-platform-idp-io-v1alpha1-tenant
+  failurePolicy: Fail
+  name: vtenant-v1alpha1.kb.io
+  rules:
+  - apiGroups:
+    - platform.idp.io
+    apiVersions:
+    - v1alpha1
+    operations:
+    - CREATE
+    - UPDATE
+    resources:
+    - tenants
+  sideEffects: None

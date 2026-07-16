@@ -1,0 +1,27 @@
+# idp-platform-lab local dev cluster — single-node k3d with embedded registry.
+# See ADR-001 (k3d), ADR-002 (registry), ADR-003 (Traefik).
+apiVersion: k3d.io/v1alpha5
+kind: Simple
+metadata:
+  name: idp
+servers: 1
+agents: 0
+image: rancher/k3s:v1.31.14-k3s1
+ports:
+  - port: 80:80
+    nodeFilters: [loadbalancer]
+  - port: 443:443
+    nodeFilters: [loadbalancer]
+registries:
+  create:
+    name: k3d-idp-registry
+    host: "0.0.0.0"
+    hostPort: "5050"
+options:
+  k3d:
+    wait: true
+    timeout: "120s"
+  k3s:
+    extraArgs:
+      - arg: "--disable=servicelb"
+        nodeFilters: [server:*]

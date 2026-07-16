@@ -1,0 +1,19 @@
+# A team declares one service. The controller creates an ArgoCD Application that
+# syncs the workload from workloads/<team>/<name> in the workloads repo, into the
+# namespace its Tenant provisioned. The claim name is the service name, so this
+# claim syncs workloads/payments/payments. The referenced Tenant (spec.team) must
+# exist and be Ready before this claim goes Ready (see ADR-010).
+apiVersion: platform.idp.io/v1alpha1
+kind: ServiceClaim
+metadata:
+  labels:
+    app.kubernetes.io/name: idp
+    app.kubernetes.io/managed-by: kustomize
+  name: payments
+spec:
+  # team references the Tenant by name. The workload lands in team-<team>.
+  team: payments
+  # image and replicas become kustomize overrides on the workload base, so the
+  # team drives its deployment through the claim, not by editing manifests.
+  image: ghcr.io/chenyutingjerry/payments:1.0.0
+  replicas: 2

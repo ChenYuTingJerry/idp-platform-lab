@@ -1,0 +1,14 @@
+# ClusterIP Service in front of the payments Deployment.
+apiVersion: v1
+kind: Service
+metadata:
+  name: payments
+  labels:
+    app: payments
+spec:
+  selector:
+    app: payments
+  ports:
+    - name: http
+      port: 80
+      targetPort: 80

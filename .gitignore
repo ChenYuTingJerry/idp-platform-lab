@@ -1,0 +1,39 @@
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+vendor/
+
+# Kubebuilder / controller-gen
+bin/
+testbin/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# AI tooling (local session state, not part of the project)
+.claude/
+
+# Private local notes (not part of the project)
+notes/local/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# idp-platform-lab generated output
+generated/
+
+# Kustomize Helm chart cache
+infra/argocd/charts/
+
+# Temporary
+tmp/

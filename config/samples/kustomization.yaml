@@ -1,0 +1,5 @@
+## Append samples of your project ##
+resources:
+- platform_v1alpha1_tenant.yaml
+- platform_v1alpha1_serviceclaim.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples

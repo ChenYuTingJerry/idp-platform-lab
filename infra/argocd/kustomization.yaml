@@ -1,0 +1,16 @@
+# ArgoCD installation via Kustomize + Helm chart inflator.
+# Chart: argo-cd 9.5.7 (ArgoCD 3.3.8) from argoproj/argo-helm.
+# Build: kustomize build infra/argocd --enable-helm | kubectl apply -f -
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: argocd
+
+helmCharts:
+  - name: argo-cd
+    repo: https://argoproj.github.io/argo-helm
+    version: 9.5.7
+    releaseName: argocd
+    namespace: argocd
+    includeCRDs: true
+    valuesFile: values.yaml
