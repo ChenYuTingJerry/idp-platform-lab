@@ -48,7 +48,6 @@ ADR may design something not yet built; the repo never reads as if it is built.
 | Validating webhook: quota ceiling + terminating-Tenant, cert-manager signed | done | ADR-013 |
 | Controller reads back the deployed workload (the silent kustomize no-op) | **deferred** | ADR-014 |
 | `expose` / Ingress abstraction | **not built** | ADR-003 |
-| OTel spans on the reconcile loop | **not built** | ROADMAP M5 |
 
 The build-vs-adopt reasoning, and where idp sits next to Capsule, Crossplane,
 Kratix and kro, is ADR-015.

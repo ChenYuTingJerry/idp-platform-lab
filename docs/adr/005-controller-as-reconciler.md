@@ -180,8 +180,12 @@ also outweighs its benefit.
 
 - **OTel traces bridge naturally.** A controller emitting OpenTelemetry
   spans per reconcile call (resource created, patched, finalized)
-  directly links idp-platform-lab to the otel-contract project.
+  directly links idp-platform-lab to the otel-platform-lab project.
   Argo Workflow logs don't have the same tracing affordance.
+  **Superseded (2026-07-22):** the cross-lab link is dropped. idp-platform-lab
+  and otel-platform-lab stay separate labs. The tracing affordance of the
+  reconcile pattern still holds; the plan to join the two labs does not. See
+  ROADMAP, "Out of scope."
 
 ### Negative
 

@@ -22,7 +22,6 @@ Status at a glance:
 | M2 — RBAC, Quota, idempotency | Done |
 | M3 — ArgoCD Application integration | Done (verified on k3d); Tenant-lifecycle e2e runs in CI |
 | M4 — Finalizers and status polish | Done (two finalizers, ADR-012; validating webhook, ADR-013) |
-| M5 — Polish, docs, demo | Not implemented |
 
 ---
 
@@ -351,15 +350,3 @@ Acceptance criteria (from ROADMAP):
       name and non-negative rules also run as CEL rules on the CRD.
 - [x] Status subresource has a full condition set with a `Ready` aggregate.
 - [x] Printer columns: `kubectl get serviceclaim` shows team, image, phase, age.
-
----
-
-## M5 — Polish, docs, demo (Not implemented)
-
-Build/verify commands: TODO when built.
-
-Acceptance criteria (from ROADMAP):
-
-- [ ] Reconcile loop traced with OpenTelemetry spans.
-- [ ] Architecture diagram and ADRs finalized.
-- [ ] End-to-end demo recorded.
