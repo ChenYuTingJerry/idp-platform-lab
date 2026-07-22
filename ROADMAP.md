@@ -35,15 +35,22 @@ thing is never described as done.
 - **A report-only condition for a pre-existing over-ceiling Tenant.** (ADR-013)
 - **The `expose` / Ingress abstraction.** Designed in ADR-003, not built.
 
-## Next
+## Feature-frozen at M4
 
-**M5 — Observability of the reconcile loop.** Emit OpenTelemetry spans per
-reconcile and feed them into the `otel-platform-lab` stack. This is the seam that
-joins the two labs: idp builds the platform, otel-platform-lab observes it.
-Not started.
+This lab is complete at M4. Its point was depth on the controller /
+reconcile-loop pattern, and M0–M4 deliver that end to end: team provisioning,
+RBAC, quota, ArgoCD sync, ordered teardown, and two-layer validation. There is
+no M5.
 
 ## Out of scope
 
 Real CI/CD, multi-cluster, SSO, HPA, NetworkPolicies, TLS at the ArgoCD server.
 For a production IDP, adopt Capsule plus Crossplane or kro instead of extending
 this lab (ADR-015).
+
+Observability of the reconcile loop (OpenTelemetry spans) is out of scope too.
+An earlier plan made it the seam that would join this lab to
+`otel-platform-lab`. That seam is dropped on purpose. The two are separate
+labs, each meant to stand on its own, and tying idp's "done" state to another
+repo's maturity served a demo, not either lab's depth. controller-runtime's
+built-in reconcile metrics already cover the aggregate view.
