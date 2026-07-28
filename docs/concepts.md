@@ -3,7 +3,8 @@
 A walkthrough of how idp-platform-lab is used, from a team's perspective and
 from the platform engineer's perspective. Read this before reading
 the ADRs; the ADRs explain *why* the design is this way, this file
-explains *what* the design looks like in practice.
+explains *what* the design looks like in practice. For the list of which
+scenarios are covered and which are not, see [scenarios.md](scenarios.md).
 
 ## The actors
 
