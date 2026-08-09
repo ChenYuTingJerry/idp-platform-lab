@@ -152,11 +152,30 @@ docker-buildx: ## Build and push docker image for the manager for cross-platform
 	- $(CONTAINER_TOOL) buildx rm idp-builder
 	rm Dockerfile.cross
 
+# MANAGER_KUSTOMIZATION holds the manager image reference. `kustomize edit set
+# image` rewrites it in place, so any target that sets IMG would leave the file
+# modified in the working tree. An e2e run sets IMG to a throwaway value, and
+# committing that would point the deployment at an image the local registry does
+# not have. render-with-image makes the edit, renders, and always puts the
+# original file back, so the committed value stays the local default.
+MANAGER_KUSTOMIZATION = config/manager/kustomization.yaml
+
+# render-with-image renders the config/default overlay with the manager image set
+# to IMG, on stdout. The trap restores the kustomization file on every exit path,
+# including a failed render or an interrupt.
+define render-with-image
+set -e; \
+backup="$$(mktemp)"; \
+cp "$(MANAGER_KUSTOMIZATION)" "$$backup"; \
+trap 'mv "$$backup" "$(MANAGER_KUSTOMIZATION)"' EXIT; \
+(cd config/manager && "$(KUSTOMIZE)" edit set image controller=$(IMG)); \
+"$(KUSTOMIZE)" build config/default
+endef
+
 .PHONY: build-installer
 build-installer: manifests generate kustomize ## Generate a consolidated YAML with CRDs and deployment.
 	mkdir -p dist
-	cd config/manager && "$(KUSTOMIZE)" edit set image controller=${IMG}
-	"$(KUSTOMIZE)" build config/default > dist/install.yaml
+	@$(render-with-image) > dist/install.yaml
 
 ##@ Deployment
 
@@ -176,8 +195,7 @@ uninstall: manifests kustomize ## Uninstall CRDs from the K8s cluster specified 
 
 .PHONY: deploy
 deploy: manifests kustomize ## Deploy controller to the K8s cluster specified in ~/.kube/config.
-	cd config/manager && "$(KUSTOMIZE)" edit set image controller=${IMG}
-	"$(KUSTOMIZE)" build config/default | "$(KUBECTL)" apply -f -
+	@$(render-with-image) | "$(KUBECTL)" apply -f -
 
 .PHONY: undeploy
 undeploy: kustomize ## Undeploy controller from the K8s cluster specified in ~/.kube/config. Call with ignore-not-found=true to ignore resource not found errors during deletion.

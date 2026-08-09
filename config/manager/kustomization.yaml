@@ -2,6 +2,19 @@ resources:
 - manager.yaml
 apiVersion: kustomize.config.k8s.io/v1beta1
 kind: Kustomization
+# The tag below is a base value, not a released version. Every deploy path sets
+# the real image through IMG (`task deploy`, `make deploy`, the e2e suite), so
+# this value is what the file holds at rest, and it is never the tag that ships.
+#
+# It deliberately does NOT match any milestone tag. The runbook deploys
+# 0.1.0-m1, 0.2.0-m2 and so on, each tied to a milestone in docs/verification.md.
+# The `-idp` suffix marks this one as the base instead, so nobody reads it as a
+# version that was actually deployed.
+#
+# `kustomize edit set image` rewrites this file in place. `make deploy` and
+# `make build-installer` therefore back it up and restore it (see
+# render-with-image in the Makefile), which is what keeps the base value stable.
+# Without that, one e2e run would leave a throwaway tag here.
 images:
 - name: controller
   newName: k3d-idp-registry:5050/idp-controller
