@@ -83,6 +83,12 @@ We chose Kustomize over Helm because the rest of the project is Kustomize-native
 base needs no chart boilerplate. The trade-off is the name-matching contract
 above; Helm parameters would avoid it but add a chart per service.
 
+> **Note (2026-08, ADR-016):** half of that parenthetical no longer holds. The
+> ArgoCD install moved to a real Helm release, so only `config/` is still
+> Kustomize. The decision here is unchanged, because it rests on the workloads
+> being plain bases with no chart to write. Only the supporting evidence is
+> weaker.
+
 ### 4. The claim owns the Application across the namespace boundary
 
 The `Application` is created in the `argocd` namespace (where ArgoCD watches by

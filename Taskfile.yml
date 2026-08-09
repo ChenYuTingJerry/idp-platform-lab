@@ -36,13 +36,22 @@ tasks:
       - k3d cluster create --config infra/k3d-config.yaml
       - echo "Cluster '{{.CLUSTER_NAME}}' created."
 
+  # ArgoCD is installed as a real Helm release, not rendered through Kustomize.
+  # `helm upgrade --install` is idempotent, runs the chart's pre-install hooks in
+  # order (the redis secret init Job depends on that), and `--wait` blocks until
+  # the deployments are ready. See ADR-016.
   up:argocd:
-    desc: Install ArgoCD via Kustomize + Helm (idempotent)
+    desc: Install ArgoCD via Helm (idempotent)
     cmds:
-      - kubectl create namespace {{.ARGOCD_NAMESPACE}} --dry-run=client -o yaml | kubectl apply -f -
-      - kustomize build infra/argocd --enable-helm | kubectl apply --server-side --force-conflicts -f -
-      - echo "Waiting for ArgoCD deployments..."
-      - kubectl wait --for=condition=available deployment --all -n {{.ARGOCD_NAMESPACE}} --timeout=300s
+      - helm repo add argo https://argoproj.github.io/argo-helm >/dev/null 2>&1 || true
+      - helm repo update argo >/dev/null
+      - echo "Installing ArgoCD chart {{.ARGOCD_CHART_VERSION}}..."
+      - >-
+        helm upgrade --install argocd argo/argo-cd
+        --version {{.ARGOCD_CHART_VERSION}}
+        --namespace {{.ARGOCD_NAMESPACE}} --create-namespace
+        --values infra/argocd/values.yaml
+        --wait --timeout 10m
       - echo "ArgoCD is ready."
 
   down:

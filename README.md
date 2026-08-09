@@ -54,8 +54,8 @@ Kratix and kro, is ADR-015.
 
 ## Quick start
 
-Prerequisites: Docker, k3d, kustomize, cert-manager-compatible cluster access,
-Go 1.26, the `task` runner.
+Prerequisites: Docker, k3d, kustomize, helm, cert-manager-compatible cluster
+access, Go 1.26, the `task` runner.
 
 ```bash
 task up          # k3d cluster + registry + cert-manager + ArgoCD

@@ -35,7 +35,8 @@ task status    # show all pods across all namespaces
 ```
 
 `task up` is idempotent. Cluster creation is skipped if the cluster exists;
-ArgoCD is re-applied with server-side apply.
+ArgoCD is installed with `helm upgrade --install`, which is idempotent on its
+own (ADR-016).
 
 ### Verify
 
