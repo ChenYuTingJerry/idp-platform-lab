@@ -106,3 +106,18 @@ reading in order: ADR-004 to ADR-005 (why the reconciler is hand-written, not an
 Argo Workflow), and ADR-000 to ADR-007 (why the identity is an extensible IDP, not
 an Argo ecosystem demo). ADR-015 places the whole thing against the off-the-shelf
 tools.
+
+## License
+
+Apache License 2.0. See [LICENSE](LICENSE).
+
+### Third-party files
+
+- `test/testdata/crds/applications.yaml` is the ArgoCD `Application` CRD,
+  rendered from the `argo-cd` Helm chart 9.5.7 (Argo CD v3.3.8,
+  `templates/crds/crd-application.yaml`). It is not original work. The CRD is
+  defined by [argoproj/argo-cd](https://github.com/argoproj/argo-cd) and
+  packaged by [argoproj/argo-helm](https://github.com/argoproj/argo-helm), both
+  licensed under Apache License 2.0. The envtest suite, the e2e test and
+  `scenarios/03-second-service` use it so the controller can create an
+  `Application` without a real ArgoCD install.
