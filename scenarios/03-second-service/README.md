@@ -134,7 +134,7 @@ editors) will not take SVG, so export a PNG when you need one:
 
 ```sh
 "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless \
-  --screenshot=ownership-before-after.png --window-size=1040,560 \
+  --screenshot=ownership-before-after.png --window-size=1200,580 \
   --force-device-scale-factor=2 --default-background-color=FFFFFFFF \
   ownership-before-after.svg
 ```
