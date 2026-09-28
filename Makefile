@@ -43,13 +43,19 @@ help: ## Display this help.
 
 ##@ Development
 
+# controller-gen is pointed at these paths instead of ./..., because with "..."
+# it walks into nested Go modules (controller-tools loader), and scenarios/
+# holds reconstructed controllers that declare the same API group and kind. See
+# ADR-017.
+CODEGEN_PATHS ?= ./api/...;./internal/...;./cmd/...
+
 .PHONY: manifests
 manifests: controller-gen ## Generate WebhookConfiguration, ClusterRole and CustomResourceDefinition objects.
-	"$(CONTROLLER_GEN)" rbac:roleName=manager-role crd webhook paths="./..." output:crd:artifacts:config=config/crd/bases
+	"$(CONTROLLER_GEN)" rbac:roleName=manager-role crd webhook paths="$(CODEGEN_PATHS)" output:crd:artifacts:config=config/crd/bases
 
 .PHONY: generate
 generate: controller-gen ## Generate code containing DeepCopy, DeepCopyInto, and DeepCopyObject method implementations.
-	"$(CONTROLLER_GEN)" object:headerFile="hack/boilerplate.go.txt",year=$(YEAR) paths="./..."
+	"$(CONTROLLER_GEN)" object:headerFile="hack/boilerplate.go.txt",year=$(YEAR) paths="$(CODEGEN_PATHS)"
 
 .PHONY: fmt
 fmt: ## Run go fmt against code.

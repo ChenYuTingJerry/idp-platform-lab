@@ -40,5 +40,14 @@ dist/
 # copy does not suddenly show 3 MB of untracked files.
 infra/argocd/charts/
 
+# Scenario reconstructions keep their own kubeconfig so they can never touch
+# the cluster your normal kubectl points at (ADR-017).
+scenarios/**/.kubeconfig
+
+# PNG exports of scenario diagrams. The SVG is the source; the PNG only exists
+# because LinkedIn and some editors do not accept SVG. The README says how to
+# regenerate it.
+scenarios/**/*.png
+
 # Temporary
 tmp/
