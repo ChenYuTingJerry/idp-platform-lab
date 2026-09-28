@@ -42,6 +42,10 @@ reconcile-loop pattern, and M0–M4 deliver that end to end: team provisioning,
 RBAC, quota, ArgoCD sync, ordered teardown, and two-layer validation. There is
 no M5.
 
+`scenarios/` does not change that. It holds reconstructed before-states you can
+run, so a failure the current design fixed is visible instead of only described.
+They add no CRD, no controller capability and no milestone. See ADR-017.
+
 ## Out of scope
 
 Real CI/CD, multi-cluster, SSO, HPA, NetworkPolicies, TLS at the ArgoCD server.
