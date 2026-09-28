@@ -29,24 +29,31 @@ and Kubernetes allows exactly one controller owner per object.
 You need Docker, `k3d`, `kubectl`, `task` and Go. Everything runs in a cluster
 this scenario creates for itself.
 
+From the repository root:
+
 ```sh
-cd before
+cd scenarios/03-second-service/before
 task up          # creates the k3d cluster idp-03-before, writes ./.kubeconfig
 task install     # the M3 CRD, the ArgoCD Application CRD, the argocd namespace
 task run         # the reconstructed M3 controller, in the foreground
 ```
 
-Then, in a second terminal:
+Then, in a second terminal, also from the repository root:
 
 ```sh
-cd before
+cd scenarios/03-second-service/before
 task repro       # applies one claim, waits for Ready, applies a second claim
 task down        # deletes the cluster when you are finished
 ```
 
-`task up` does not change your current kubectl context, and every other task
-refuses to run unless the context is this scenario's own cluster. Nothing here
-can reach the cluster your normal `kubectl` talks to.
+Every task pins `KUBECONFIG` to `./.kubeconfig`, and `task up` creates the
+cluster without updating your default kubeconfig, so your current context stays
+where it was across `task up` and `task down`. `task install`, `task run` and
+`task repro` also refuse to run unless the context name is
+`k3d-idp-03-before`. `task up` and `task down` do not need that check: they only
+call `k3d` with this scenario's own cluster name. The check compares the context
+name, not the API server address, so it guards against mistakes, not against a
+hand-edited `.kubeconfig`.
 
 ## What you should see
 
@@ -114,9 +121,11 @@ and quota, and many `ServiceClaim`s reference it and own only their own
 - Proven by test: `internal/controller/serviceclaim_controller_test.go`, the spec
   "lets one team run many services: two claims on one Tenant both go Ready".
   Run it with `task test` from the repository root.
-- Proven on a cluster: the M3 live walkthrough in
+- On a cluster, only in part: the M3 live walkthrough in
   [docs/verification.md](../../docs/verification.md) under "M3 — ArgoCD
-  Application integration", now with a `Tenant` applied first.
+  Application integration" applies a `Tenant` and one claim, and shows that
+  claim going `Ready`. It does not apply a second claim, so the two-claim case
+  is proven by the test above, not on a cluster.
 
 ## Why it was designed this way
 

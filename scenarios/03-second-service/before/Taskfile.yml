@@ -1,6 +1,8 @@
-# Scenario 03, before-state. Every task pins KUBECONFIG to this directory, so
-# nothing here can touch the cluster your normal kubectl points at. The guard
-# task refuses to run if the context is anything but this scenario's cluster.
+# Scenario 03, before-state. Every task pins KUBECONFIG to this directory. The
+# tasks that talk to the cluster depend on guard, which refuses to run unless
+# the context name is this scenario's cluster. up and down only call k3d with
+# this scenario's cluster name. The guard compares names, not API server
+# addresses, so it catches mistakes, not a hand-edited .kubeconfig.
 version: "3"
 
 vars:

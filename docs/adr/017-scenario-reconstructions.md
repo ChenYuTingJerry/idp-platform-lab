@@ -56,8 +56,12 @@ pretend to be. Two rules follow:
 ### 4. It never touches the main cluster or the main build
 
 - Its own `go.mod`, so the root module ignores it.
-- Its own k3d cluster and its own kubeconfig file. Every task checks the current
-  context first and stops if it points anywhere else.
+- Its own k3d cluster and its own kubeconfig file. Every task pins `KUBECONFIG`
+  to that file. Tasks that talk to the cluster check the context name first and
+  stop if it is anything else. Tasks that only create or delete the cluster call
+  `k3d` with the scenario's own cluster name, so they need no check. The check
+  compares names, not API server addresses: it catches mistakes, not a
+  hand-edited kubeconfig.
 - Root code generation is pinned to `CODEGEN_PATHS` (`./api/...`,
   `./internal/...`, `./cmd/...`). With `./...`, controller-gen walks into nested
   modules, and a reconstruction declares the same API group and kind as the real
