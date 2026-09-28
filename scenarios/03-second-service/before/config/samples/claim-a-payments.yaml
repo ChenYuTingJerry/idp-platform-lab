@@ -1,0 +1,14 @@
+# The team's first service, the M3 way: one ServiceClaim carries both the
+# team's allocation (resources) and one service's workload (image, replicas).
+apiVersion: platform.idp.io/v1alpha1
+kind: ServiceClaim
+metadata:
+  name: payments
+spec:
+  team: payments
+  image: ghcr.io/chenyutingjerry/payments:1.0.0
+  replicas: 2
+  resources:
+    cpu: "2"
+    memory: 4Gi
+    pods: 10

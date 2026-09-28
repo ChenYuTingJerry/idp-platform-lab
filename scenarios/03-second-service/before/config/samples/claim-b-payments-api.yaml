@@ -1,0 +1,15 @@
+# The team's second service. It has to name the same team, so it lands in the
+# same namespace, with the same RoleBinding and the same quota. Those three
+# already have the first claim as their controller owner.
+apiVersion: platform.idp.io/v1alpha1
+kind: ServiceClaim
+metadata:
+  name: payments-api
+spec:
+  team: payments
+  image: ghcr.io/chenyutingjerry/payments-api:1.0.0
+  replicas: 1
+  resources:
+    cpu: "2"
+    memory: 4Gi
+    pods: 10

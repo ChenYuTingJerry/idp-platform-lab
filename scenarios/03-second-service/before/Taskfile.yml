@@ -1,0 +1,87 @@
+# Scenario 03, before-state. Every task pins KUBECONFIG to this directory, so
+# nothing here can touch the cluster your normal kubectl points at. The guard
+# task refuses to run if the context is anything but this scenario's cluster.
+version: "3"
+
+vars:
+  CLUSTER_NAME: idp-03-before
+  K3S_IMAGE: rancher/k3s:v1.31.14-k3s1
+  CONTEXT: k3d-idp-03-before
+  # The Application CRD is borrowed from the main repo's test fixtures, so the
+  # controller can create an Application without a real ArgoCD install. This is
+  # the one file this scenario reads from outside before/ (ADR-017, Cost
+  # accepted). If the fixture moves, update this path.
+  ARGO_CRD: ../../../test/testdata/crds/applications.yaml
+  REPO_URL: https://github.com/ChenYuTingJerry/idp-platform-lab
+
+env:
+  KUBECONFIG: .kubeconfig
+
+tasks:
+  up:
+    desc: Create this scenario's own k3d cluster and write its kubeconfig here
+    # No task-level status check. It would skip the kubeconfig write too, so a
+    # lost .kubeconfig could never be restored while the cluster exists. The
+    # create step checks for the cluster itself; the write is safe to repeat.
+    cmds:
+      - |
+        if k3d cluster list -o json | grep -q '"name":"{{.CLUSTER_NAME}}"'; then
+          echo "Cluster {{.CLUSTER_NAME}} already exists, skipping create."
+        else
+          k3d cluster create {{.CLUSTER_NAME}} \
+            --image {{.K3S_IMAGE}} \
+            --servers 1 \
+            --no-lb \
+            --kubeconfig-update-default=false \
+            --kubeconfig-switch-context=false
+        fi
+      - k3d kubeconfig write {{.CLUSTER_NAME}} --output .kubeconfig
+      - echo "Cluster {{.CLUSTER_NAME}} ready. KUBECONFIG is .kubeconfig in this directory."
+
+  guard:
+    internal: true
+    cmds:
+      - |
+        current=$(kubectl config current-context)
+        if [ "$current" != "{{.CONTEXT}}" ]; then
+          echo "Refusing to run: context is '$current', expected '{{.CONTEXT}}'." >&2
+          echo "Run 'task up' first, or check KUBECONFIG." >&2
+          exit 1
+        fi
+
+  install:
+    desc: Install the M3 ServiceClaim CRD, the ArgoCD Application CRD, and the argocd namespace
+    deps: [guard]
+    cmds:
+      - kubectl apply -f config/crd/bases
+      # The fixture is ~390KB, over the annotation limit a client-side apply
+      # writes, so it has to go server-side.
+      - kubectl apply --server-side -f {{.ARGO_CRD}}
+      - kubectl create namespace argocd --dry-run=client -o yaml | kubectl apply -f -
+
+  run:
+    desc: Run the reconstructed M3 controller in the foreground
+    deps: [guard]
+    cmds:
+      - go run ./cmd --workloads-repo-url={{.REPO_URL}}
+
+  repro:
+    desc: Apply one claim, wait for Ready, then apply a second claim for the same team
+    deps: [guard]
+    cmds:
+      - kubectl apply -f config/samples/claim-a-payments.yaml
+      - kubectl wait --for=jsonpath='{.status.phase}'=Ready serviceclaim/payments --timeout=60s
+      - kubectl apply -f config/samples/claim-b-payments-api.yaml
+      # Give the second claim a moment to reconcile and fail.
+      - sleep 5
+      - echo "" && echo "=== payments (first claim) ==="
+      - kubectl get serviceclaim payments -o jsonpath='{range .status.conditions[*]}{.type}={.status} ({.reason}) {.message}{"\n"}{end}'
+      - echo "" && echo "=== payments-api (second claim for the same team) ==="
+      - kubectl get serviceclaim payments-api -o jsonpath='{range .status.conditions[*]}{.type}={.status} ({.reason}) {.message}{"\n"}{end}'
+      - echo "" && kubectl get serviceclaims
+
+  down:
+    desc: Delete this scenario's cluster and its kubeconfig
+    cmds:
+      - k3d cluster delete {{.CLUSTER_NAME}}
+      - rm -f .kubeconfig

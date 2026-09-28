@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 560" width="1040" height="560" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif">
+  <rect width="1040" height="560" fill="#ffffff"/>
+
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#6b7280"/>
+    </marker>
+    <marker id="arrowRed" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#b91c1c"/>
+    </marker>
+    <marker id="arrowDash" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+      <path d="M 0 0 L 10 5 L 0 10 z" fill="#9ca3af"/>
+    </marker>
+  </defs>
+
+  <!-- ===== BEFORE ===== -->
+  <text x="40" y="44" font-size="19" font-weight="600" fill="#111827">Before: one ServiceClaim owns everything</text>
+  <text x="40" y="68" font-size="14" fill="#6b7280">Three of the four objects are team-level, not service-level</text>
+
+  <!-- first claim -->
+  <rect x="40" y="92" width="200" height="52" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="140" y="116" font-size="14" font-weight="600" fill="#065f46" text-anchor="middle">ServiceClaim</text>
+  <text x="140" y="134" font-size="13" fill="#047857" text-anchor="middle">payments</text>
+
+  <!-- owned objects -->
+  <rect x="40" y="206" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="140" y="227" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">Namespace</text>
+  <text x="140" y="243" font-size="12" fill="#6b7280" text-anchor="middle">team-payments</text>
+
+  <rect x="40" y="262" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="140" y="283" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">RoleBinding</text>
+  <text x="140" y="299" font-size="12" fill="#6b7280" text-anchor="middle">team-edit</text>
+
+  <rect x="40" y="318" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="140" y="339" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">ResourceQuota</text>
+  <text x="140" y="355" font-size="12" fill="#6b7280" text-anchor="middle">team-quota</text>
+
+  <rect x="40" y="374" width="200" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="140" y="395" font-size="13" font-weight="600" fill="#1e40af" text-anchor="middle">Application</text>
+  <text x="140" y="411" font-size="12" fill="#2563eb" text-anchor="middle">payments</text>
+
+  <!-- owner arrows from claim A -->
+  <path d="M 140 144 L 140 202" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 60 250 L 60 258" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 60 306 L 60 314" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 60 362 L 60 370" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="152" y="180" font-size="12" fill="#6b7280">owns all four</text>
+
+  <!-- second claim -->
+  <rect x="290" y="92" width="200" height="52" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5" stroke-dasharray="5 3"/>
+  <text x="390" y="116" font-size="14" font-weight="600" fill="#7f1d1d" text-anchor="middle">ServiceClaim</text>
+  <text x="390" y="134" font-size="13" fill="#b91c1c" text-anchor="middle">payments-api</text>
+
+  <!-- blocked arrow -->
+  <path d="M 372 150 C 368 198, 334 216, 248 228" stroke="#b91c1c" stroke-width="1.8" fill="none" marker-end="url(#arrowRed)"/>
+  <text x="256" y="158" font-size="12" font-weight="600" fill="#b91c1c">wants to own</text>
+  <text x="256" y="174" font-size="12" font-weight="600" fill="#b91c1c">the same three</text>
+
+  <rect x="262" y="250" width="228" height="76" rx="8" fill="#fef2f2" stroke="#b91c1c" stroke-width="1.5"/>
+  <text x="376" y="272" font-size="13" font-weight="700" fill="#7f1d1d" text-anchor="middle">AlreadyOwnedError</text>
+  <text x="376" y="292" font-size="12" fill="#b91c1c" text-anchor="middle">one controller owner per object</text>
+  <text x="376" y="310" font-size="12" fill="#b91c1c" text-anchor="middle">second claim never goes Ready</text>
+
+  <!-- divider -->
+  <line x1="530" y1="30" x2="530" y2="530" stroke="#e5e7eb" stroke-width="1.5"/>
+
+  <!-- ===== AFTER ===== -->
+  <text x="570" y="44" font-size="19" font-weight="600" fill="#111827">After: split along the team / service seam</text>
+  <text x="570" y="68" font-size="14" fill="#6b7280">One Tenant per team, many ServiceClaims per Tenant</text>
+
+  <!-- tenant -->
+  <rect x="570" y="92" width="200" height="52" rx="8" fill="#f5f3ff" stroke="#7c3aed" stroke-width="1.5"/>
+  <text x="670" y="116" font-size="14" font-weight="600" fill="#5b21b6" text-anchor="middle">Tenant</text>
+  <text x="670" y="134" font-size="13" fill="#7c3aed" text-anchor="middle">payments</text>
+
+  <rect x="570" y="206" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="670" y="227" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">Namespace</text>
+  <text x="670" y="243" font-size="12" fill="#6b7280" text-anchor="middle">team-payments</text>
+
+  <rect x="570" y="262" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="670" y="283" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">RoleBinding</text>
+  <text x="670" y="299" font-size="12" fill="#6b7280" text-anchor="middle">team-edit</text>
+
+  <rect x="570" y="318" width="200" height="44" rx="8" fill="#f3f4f6" stroke="#9ca3af" stroke-width="1.5"/>
+  <text x="670" y="339" font-size="13" font-weight="600" fill="#374151" text-anchor="middle">ResourceQuota</text>
+  <text x="670" y="355" font-size="12" fill="#6b7280" text-anchor="middle">team-quota</text>
+
+  <path d="M 670 144 L 670 202" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 590 250 L 590 258" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 590 306 L 590 314" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="682" y="180" font-size="12" fill="#6b7280">owns the team</text>
+
+  <!-- claims -->
+  <rect x="820" y="92" width="180" height="52" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="910" y="116" font-size="14" font-weight="600" fill="#065f46" text-anchor="middle">ServiceClaim</text>
+  <text x="910" y="134" font-size="13" fill="#047857" text-anchor="middle">payments</text>
+
+  <rect x="820" y="206" width="180" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="910" y="227" font-size="13" font-weight="600" fill="#1e40af" text-anchor="middle">Application</text>
+  <text x="910" y="243" font-size="12" fill="#2563eb" text-anchor="middle">payments</text>
+
+  <rect x="820" y="318" width="180" height="52" rx="8" fill="#ecfdf5" stroke="#059669" stroke-width="1.5"/>
+  <text x="910" y="342" font-size="14" font-weight="600" fill="#065f46" text-anchor="middle">ServiceClaim</text>
+  <text x="910" y="360" font-size="13" fill="#047857" text-anchor="middle">payments-api</text>
+
+  <rect x="820" y="432" width="180" height="44" rx="8" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+  <text x="910" y="453" font-size="13" font-weight="600" fill="#1e40af" text-anchor="middle">Application</text>
+  <text x="910" y="469" font-size="12" fill="#2563eb" text-anchor="middle">payments-api</text>
+
+  <path d="M 910 144 L 910 202" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <path d="M 910 370 L 910 428" stroke="#6b7280" stroke-width="1.5" fill="none" marker-end="url(#arrow)"/>
+  <text x="922" y="176" font-size="12" fill="#6b7280">owns only its own</text>
+  <text x="922" y="402" font-size="12" fill="#6b7280">owns only its own</text>
+
+  <!-- references -->
+  <path d="M 816 118 L 776 118" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#arrowDash)"/>
+  <path d="M 816 344 C 790 344, 782 200, 776 150" stroke="#9ca3af" stroke-width="1.5" stroke-dasharray="5 3" fill="none" marker-end="url(#arrowDash)"/>
+  <text x="742" y="404" font-size="12" fill="#9ca3af" text-anchor="middle">spec.team references</text>
+  <text x="742" y="420" font-size="12" fill="#9ca3af" text-anchor="middle">the Tenant by name</text>
+
+  <!-- footer -->
+  <text x="40" y="508" font-size="12.5" fill="#6b7280">Solid arrow: controller owner reference. Dashed: a plain name reference, no ownership.</text>
+  <text x="40" y="528" font-size="12.5" fill="#6b7280">idp-platform-lab, ADR-010. Run the before-state: scenarios/03-second-service/</text>
+</svg>
