@@ -1,6 +1,6 @@
 # ADR 017: Reconstructed before-states live in `scenarios/`
 
-- **Status:** Proposed (pilot: `scenarios/03-second-service`)
+- **Status:** Accepted (2026-09-30). The pilot, `scenarios/03-second-service`, ran end to end on 2026-09-28, and its repro output is used in [A Kubernetes Ownership Limit I Wrote Down Before I Hit It](https://dev.to/yu_ting_chen/a-kubernetes-ownership-limit-i-wrote-down-before-i-hit-it-350c), published 2026-09-30.
 - **Date:** 2026-09-16
 - **Implemented:** partial (the pilot scenario and the `CODEGEN_PATHS` narrowing are built; no second scenario exists yet)
 - **Deciders:** Yu Ting
