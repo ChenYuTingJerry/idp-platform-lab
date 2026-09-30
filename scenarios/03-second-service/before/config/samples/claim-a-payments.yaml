@@ -6,7 +6,7 @@ metadata:
   name: payments
 spec:
   team: payments
-  image: ghcr.io/chenyutingjerry/payments:1.0.0
+  image: nginx:1.27-alpine
   replicas: 2
   resources:
     cpu: "2"
