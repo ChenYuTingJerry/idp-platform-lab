@@ -9,8 +9,10 @@ Conventions:
 
 - All commands assume the `idp` cluster and the right kube context:
   `kubectl config use-context k3d-idp`.
-- Images use the embedded registry and a pinned tag (never `:latest`):
-  `k3d-idp-registry:5050/idp-controller:<version>`.
+- Images use the embedded registry and a pinned tag (never `:latest`). The
+  host pushes to `localhost:5050/idp-controller:<version>`, and the cluster
+  pulls the same image as `k3d-idp-registry:5050/idp-controller:<version>`.
+  No `/etc/hosts` entry is needed.
 - Re-running a Build step should be safe (idempotent) unless noted.
 
 Status at a glance:
@@ -52,8 +54,8 @@ Registry round-trip (the embedded registry actually accepts pushes):
 
 ```sh
 docker pull nginx:alpine
-docker tag nginx:alpine k3d-idp-registry:5050/test:v1
-docker push k3d-idp-registry:5050/test:v1
+docker tag nginx:alpine localhost:5050/test:v1
+docker push localhost:5050/test:v1
 ```
 
 A successful `docker push` (it prints a `digest:` line) is already proof the
@@ -61,14 +63,14 @@ write path works. To confirm the registry actually stored the image, query its
 HTTP API:
 
 ```sh
-curl http://k3d-idp-registry:5050/v2/_catalog        # {"repositories":["test"]}
-curl http://k3d-idp-registry:5050/v2/test/tags/list  # {"name":"test","tags":["v1"]}
+curl http://localhost:5050/v2/_catalog        # {"repositories":["test"]}
+curl http://localhost:5050/v2/test/tags/list  # {"name":"test","tags":["v1"]}
 ```
 
 Clean up the throwaway test image afterwards:
 
 ```sh
-docker rmi k3d-idp-registry:5050/test:v1 nginx:alpine
+docker rmi localhost:5050/test:v1 nginx:alpine
 ```
 
 Idempotency round-trip (second `up` is a no-op for the cluster):
@@ -93,8 +95,7 @@ task deploy     # build, push, and deploy the image (default tag 0.1.0-m1)
 `task deploy` wraps three make calls: `docker-build`, `docker-push`, and
 `deploy`. The `make deploy` step builds `config/default`, so it applies the CRD,
 RBAC, and the `idp-controller-manager` Deployment into the `idp-system`
-namespace in one step. Override the image tag with
-`task deploy IMG=k3d-idp-registry:5050/idp-controller:<version>`.
+namespace in one step. Override the image tag with `task deploy TAG=<version>`.
 
 Wait for the controller to be ready:
 
@@ -167,7 +168,7 @@ The quota mapping is opinionated and hidden from the team:
 ### Build
 
 ```sh
-task deploy IMG=k3d-idp-registry:5050/idp-controller:0.2.0-m2
+task deploy TAG=0.2.0-m2
 kubectl -n idp-system rollout status deploy/idp-controller-manager
 ```
 
@@ -289,7 +290,7 @@ overrides match. Do **not** pin `images:`/`replicas:` in the base
 
 ```sh
 task up                 # cluster + ArgoCD
-make docker-build docker-push deploy
+task deploy             # build, push to the k3d registry, deploy the controller
 
 # Apply the Tenant first; the claim stays TenantReady=False until it is Ready:
 kubectl apply -f config/samples/platform_v1alpha1_tenant.yaml
@@ -299,16 +300,22 @@ kubectl apply -f config/samples/platform_v1alpha1_serviceclaim.yaml
 # The claim reaches Ready once the Application is applied:
 kubectl wait --for=jsonpath='{.status.phase}'=Ready serviceclaim/payments --timeout=60s
 
-# Five conditions now, including ArgoAppCreated:
+# Three conditions: TenantReady, ArgoAppCreated, Ready. The namespace, RBAC and
+# quota conditions live on the Tenant since the split (ADR-010):
 kubectl get serviceclaim payments \
   -o jsonpath='{range .status.conditions[*]}{.type}={.status} ({.message}){"\n"}{end}'
+
+# ArgoCD needs a little time to pull the manifests from Git and start the pods
+# (about 15 to 30 seconds on a laptop). Wait for it instead of checking at once:
+kubectl -n argocd wait --for=jsonpath='{.status.health.status}'=Healthy application/payments --timeout=180s
 
 # The Application exists in argocd, owned by the claim, and syncs the workload:
 kubectl -n argocd get application payments \
   -o jsonpath='{.spec.source.path} -> {.spec.destination.namespace} | health={.status.health.status} sync={.status.sync.status}{"\n"}'
 
-# The workload pods land in the team namespace:
-kubectl -n team-payments get deploy,pods
+# The workload pods land in the team namespace, running the image the claim
+# declared (nginx:1.27-alpine), not whatever the base says:
+kubectl -n team-payments get deploy,pods -o wide
 ```
 
 Expect the Application `path` to be `workloads/payments/payments`, destination
@@ -323,11 +330,16 @@ Acceptance criteria (from ROADMAP):
 - [x] Status condition `ArgoAppCreated` reflects the Application health (created
       gates the condition; live health/sync ride in the message).
 - [x] End-to-end: apply a `ServiceClaim`, watch namespace + workload appear.
-      Verified on k3d (k3s v1.31.14): the `payments` claim reached `Ready` with all
-      five conditions True, ArgoCD reported the `payments` Application `Synced` /
-      `Healthy`, and two nginx pods came up in `team-payments`. The
+      Re-verified on k3d (k3s v1.31.14) on 2026-09-30, following the steps above
+      exactly: the `payments` Tenant and claim reached `Ready`, ArgoCD reported
+      the `payments` Application `Synced` / `Healthy`, and the Application
+      carried `images: ["app=nginx:1.27-alpine"]` and a replica count of 2. Both
+      pods in `team-payments` ran `nginx:1.27-alpine`, the image the claim
+      declared, so the kustomize override applied (no ADR-014 no-op). The
       `ArgoAppCreated` message carried `health=Healthy sync=Synced`, so the live
-      read-back works against a real ArgoCD.
+      read-back works against a real ArgoCD. An earlier note here said only "two
+      nginx pods came up" while the sample declared an image that could not be
+      pulled; that did not show the override applied, so it was replaced.
 
 CI: the Tenant-lifecycle e2e now runs in CI. The full claim -> workload path
 stays a manual step, documented above. Ordered teardown on delete (two

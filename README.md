@@ -54,8 +54,13 @@ Kratix and kro, is ADR-015.
 
 ## Quick start
 
-Prerequisites: Docker, k3d, kustomize, helm, cert-manager-compatible cluster
-access, Go 1.26, the `task` runner.
+Tested on macOS (Apple Silicon). Linux should work with the same tools; on
+Linux, make sure your user can run Docker without sudo.
+
+Prerequisites: Docker, k3d v5, kubectl, helm, Go 1.26, `make`, and the
+[`task`](https://taskfile.dev) runner. `task up` installs cert-manager and
+ArgoCD for you, and the Makefile downloads its own kustomize and controller-gen
+into `bin/`. Host ports 80, 443 and 5050 must be free.
 
 ```bash
 task up          # k3d cluster + registry + cert-manager + ArgoCD
