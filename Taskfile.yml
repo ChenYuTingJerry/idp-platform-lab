@@ -68,12 +68,34 @@ tasks:
 
   deploy:
     desc: Build, push, and deploy the controller image to the cluster
+    # One image, two names for the same registry. The host pushes to
+    # localhost:5050, which needs no /etc/hosts entry and which Docker allows
+    # over plain HTTP by default. The cluster pulls k3d-idp-registry:5050, a
+    # name k3d resolves inside its own network. Override the tag with
+    # `task deploy TAG=<version>`.
     vars:
-      IMG: '{{.IMG | default "k3d-idp-registry:5050/idp-controller:0.1.0-m1"}}'
+      TAG: '{{.TAG | default "0.1.0-m1"}}'
+      PUSH_IMG: 'localhost:5050/idp-controller:{{.TAG}}'
+      CLUSTER_IMG: 'k3d-idp-registry:5050/idp-controller:{{.TAG}}'
     cmds:
-      - make docker-build IMG={{.IMG}}
-      - make docker-push IMG={{.IMG}}
-      - make deploy IMG={{.IMG}}
+      - make docker-build IMG={{.PUSH_IMG}}
+      - make docker-push IMG={{.PUSH_IMG}}
+      - make deploy IMG={{.CLUSTER_IMG}}
+      # make deploy returns as soon as the objects are applied. Wait until the
+      # validating webhook can answer, or the next `kubectl apply` of a Tenant
+      # fails with "no endpoints available for service idp-webhook-service".
+      # That needs a Ready controller pod and the CA that cert-manager injects
+      # into the webhook configuration.
+      - kubectl -n idp-system rollout status deploy/idp-controller-manager --timeout=180s
+      - |
+        for i in $(seq 1 60); do
+          ca=$(kubectl get validatingwebhookconfiguration idp-validating-webhook-configuration \
+            -o jsonpath='{.webhooks[0].clientConfig.caBundle}')
+          [ -n "$ca" ] && echo "Webhook CA injected. The controller is ready." && exit 0
+          sleep 2
+        done
+        echo "Timed out waiting for cert-manager to inject the webhook CA." >&2
+        exit 1
 
   # Daily controller-dev targets. Thin wrappers over the kubebuilder Makefile so
   # `task` is the single entry point. Rare or internal make targets (codegen
