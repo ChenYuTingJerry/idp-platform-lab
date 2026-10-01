@@ -1,6 +1,6 @@
 # ADR 017: Reconstructed before-states live in `scenarios/`
 
-- **Status:** Accepted (2026-09-30). The pilot, `scenarios/ownership-conflict`, ran end to end on 2026-09-28, and its repro output is used in [A Team Asked for One More Service, and My Kubernetes Platform Quietly Refused](https://dev.to/yu_ting_chen/a-kubernetes-ownership-limit-i-wrote-down-before-i-hit-it-350c), published 2026-09-30.
+- **Status:** Accepted (2026-09-30). The pilot, `scenarios/ownership-conflict`, ran end to end on 2026-09-28, and its repro output is used in [A Team Asked for One More Service, and My Kubernetes Platform Quietly Refused](https://dev.to/yu_ting_chen/a-team-asked-for-one-more-service-and-my-kubernetes-platform-quietly-refused-okm), published 2026-09-30.
 - **Date:** 2026-09-16
 - **Implemented:** partial (the pilot scenario and the `CODEGEN_PATHS` narrowing are built; no second scenario exists yet)
 - **Deciders:** Yu Ting
