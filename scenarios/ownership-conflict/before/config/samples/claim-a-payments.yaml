@@ -6,7 +6,7 @@ metadata:
   name: payments
 spec:
   team: payments
-  image: nginx:1.27-alpine
+  image: nginx:1.27-alpine   # a stand-in for the real service; any image works
   replicas: 2
   resources:
     cpu: "2"

@@ -15,5 +15,5 @@ spec:
   team: payments
   # image and replicas become kustomize overrides on the workload base, so the
   # team drives its deployment through the claim, not by editing manifests.
-  image: nginx:1.27-alpine
+  image: nginx:1.27-alpine   # a stand-in for the real service; any image works
   replicas: 2
