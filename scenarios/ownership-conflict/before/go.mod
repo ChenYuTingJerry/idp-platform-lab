@@ -1,4 +1,4 @@
-module github.com/ChenYuTingJerry/idp-platform-lab/scenarios/03-second-service/before
+module github.com/ChenYuTingJerry/idp-platform-lab/scenarios/ownership-conflict/before
 
 go 1.26.2
 

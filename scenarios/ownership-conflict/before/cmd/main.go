@@ -32,8 +32,8 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log/zap"
 	metricsserver "sigs.k8s.io/controller-runtime/pkg/metrics/server"
 
-	platformv1alpha1 "github.com/ChenYuTingJerry/idp-platform-lab/scenarios/03-second-service/before/api/v1alpha1"
-	"github.com/ChenYuTingJerry/idp-platform-lab/scenarios/03-second-service/before/internal/controller"
+	platformv1alpha1 "github.com/ChenYuTingJerry/idp-platform-lab/scenarios/ownership-conflict/before/api/v1alpha1"
+	"github.com/ChenYuTingJerry/idp-platform-lab/scenarios/ownership-conflict/before/internal/controller"
 )
 
 var (

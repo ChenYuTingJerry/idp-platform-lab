@@ -162,5 +162,5 @@
     <path d="M 850 516 L 894 516" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#bad)"/>
     <text x="904" y="521">ownership refused</text>
   </g>
-  <text x="40" y="556" font-size="12.5" fill="#888888">idp-platform-lab, ADR-010. Run the before-state: github.com/ChenYuTingJerry/idp-platform-lab/tree/main/scenarios/03-second-service</text>
+  <text x="40" y="556" font-size="12.5" fill="#888888">idp-platform-lab, ADR-010. Run the before-state: github.com/ChenYuTingJerry/idp-platform-lab/tree/main/scenarios/ownership-conflict</text>
 </svg>

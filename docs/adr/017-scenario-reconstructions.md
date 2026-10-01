@@ -1,6 +1,6 @@
 # ADR 017: Reconstructed before-states live in `scenarios/`
 
-- **Status:** Accepted (2026-09-30). The pilot, `scenarios/03-second-service`, ran end to end on 2026-09-28, and its repro output is used in [A Kubernetes Ownership Limit I Wrote Down Before I Hit It](https://dev.to/yu_ting_chen/a-kubernetes-ownership-limit-i-wrote-down-before-i-hit-it-350c), published 2026-09-30.
+- **Status:** Accepted (2026-09-30). The pilot, `scenarios/ownership-conflict`, ran end to end on 2026-09-28, and its repro output is used in [A Kubernetes Ownership Limit I Wrote Down Before I Hit It](https://dev.to/yu_ting_chen/a-kubernetes-ownership-limit-i-wrote-down-before-i-hit-it-350c), published 2026-09-30.
 - **Date:** 2026-09-16
 - **Implemented:** partial (the pilot scenario and the `CODEGEN_PATHS` narrowing are built; no second scenario exists yet)
 - **Deciders:** Yu Ting
@@ -31,7 +31,10 @@ a reconstruction adds no CRD, no controller capability, and no milestone.
 
 ### 1. Only scenarios with a before-state get a directory
 
-`scenarios/NN-slug/`, numbered after the scenario cards. Decision-only scenarios
+`scenarios/<slug>/`, named after the failure it shows (the pilot is
+`scenarios/ownership-conflict`). It started as `NN-slug`, numbered after the
+private scenario cards, but a reader only saw a lone `03` with no visible
+sequence, so the number was dropped. Decision-only scenarios
 stay where they are, in `docs/scenarios.md` and the ADRs. If a scenario has no
 runnable failure, it gets prose, not a directory.
 

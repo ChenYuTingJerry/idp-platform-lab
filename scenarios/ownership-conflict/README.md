@@ -1,4 +1,4 @@
-# Scenario 03: the team that wants a second service
+# Ownership conflict: the team that wants a second service
 
 > A reconstruction. The code in `before/` was written in 2026-09, not recovered
 > from history. Read "Reconstructed, not recovered" below before you quote
@@ -32,8 +32,8 @@ this scenario creates for itself.
 From the repository root:
 
 ```sh
-cd scenarios/03-second-service/before
-task up          # creates the k3d cluster idp-03-before, writes ./.kubeconfig
+cd scenarios/ownership-conflict/before
+task up          # creates the k3d cluster idp-ownership-conflict, writes ./.kubeconfig
 task install     # the M3 CRD, the ArgoCD Application CRD, the argocd namespace
 task run         # the reconstructed M3 controller, in the foreground
 ```
@@ -41,7 +41,7 @@ task run         # the reconstructed M3 controller, in the foreground
 Then, in a second terminal, also from the repository root:
 
 ```sh
-cd scenarios/03-second-service/before
+cd scenarios/ownership-conflict/before
 task repro       # applies one claim, waits for Ready, applies a second claim
 task down        # deletes the cluster when you are finished
 ```
@@ -50,7 +50,7 @@ Every task pins `KUBECONFIG` to `./.kubeconfig`, and `task up` creates the
 cluster without updating your default kubeconfig, so your current context stays
 where it was across `task up` and `task down`. `task install`, `task run` and
 `task repro` also refuse to run unless the context name is
-`k3d-idp-03-before`. `task up` and `task down` do not need that check: they only
+`k3d-idp-ownership-conflict`. `task up` and `task down` do not need that check: they only
 call `k3d` with this scenario's own cluster name. The check compares the context
 name, not the API server address, so it guards against mistakes, not against a
 hand-edited `.kubeconfig`.

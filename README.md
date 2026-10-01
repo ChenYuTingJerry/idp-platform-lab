@@ -99,7 +99,7 @@ internal/webhook/       the validating webhook (quota ceiling, terminating check
 internal/platform/      the quota ceiling (platform config, from flags)
 workloads/<team>/<svc>/ the workload base manifests ArgoCD syncs
 config/                 CRDs, RBAC, webhook + cert-manager wiring, samples
-scenarios/NN-<name>/    reconstructed before-states you can run (ADR-017)
+scenarios/<name>/       reconstructed before-states you can run (ADR-017)
 docs/adr/               the decision record (read these for the reasoning)
 docs/                   concepts.md, scenarios.md, verification.md
 ```
@@ -124,5 +124,5 @@ Apache License 2.0. See [LICENSE](LICENSE).
   defined by [argoproj/argo-cd](https://github.com/argoproj/argo-cd) and
   packaged by [argoproj/argo-helm](https://github.com/argoproj/argo-helm), both
   licensed under Apache License 2.0. The envtest suite, the e2e test and
-  `scenarios/03-second-service` use it so the controller can create an
+  `scenarios/ownership-conflict` use it so the controller can create an
   `Application` without a real ArgoCD install.
