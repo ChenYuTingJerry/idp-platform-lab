@@ -18,8 +18,8 @@
 
   <!-- ================= BEFORE (M3) ================= -->
   <rect x="30" y="30" width="560" height="450" fill="#eeeeee" stroke="#a6a6a6" stroke-width="1.2"/>
-  <rect x="30" y="30" width="390" height="28" fill="#4a90d9" stroke="#3a78b8" stroke-width="1"/>
-  <text x="42" y="49" font-size="14.5" font-weight="700" fill="#ffffff">Before (M3): one ServiceClaim owns everything</text>
+  <rect x="30" y="30" width="320" height="28" fill="#4a90d9" stroke="#3a78b8" stroke-width="1"/>
+  <text x="42" y="49" font-size="14.5" font-weight="700" fill="#ffffff">Before: one ServiceClaim owns everything</text>
   <text x="50" y="82" font-size="13" fill="#666666">Three of the four objects are team-level, not service-level</text>
 
   <!-- claim A -->
@@ -82,8 +82,8 @@
 
   <!-- ================= AFTER (M4) ================= -->
   <rect x="610" y="30" width="560" height="450" fill="#eeeeee" stroke="#a6a6a6" stroke-width="1.2"/>
-  <rect x="610" y="30" width="410" height="28" fill="#a064d8" stroke="#8a4fc0" stroke-width="1"/>
-  <text x="622" y="49" font-size="14.5" font-weight="700" fill="#ffffff">After (M4): split along the team / service seam</text>
+  <rect x="610" y="30" width="310" height="28" fill="#a064d8" stroke="#8a4fc0" stroke-width="1"/>
+  <text x="622" y="49" font-size="14.5" font-weight="700" fill="#ffffff">After: split along the team / service seam</text>
   <text x="630" y="82" font-size="13" fill="#666666">One Tenant per team, many ServiceClaims per Tenant</text>
 
   <!-- tenant -->
@@ -162,5 +162,5 @@
     <path d="M 850 516 L 894 516" stroke="#b85450" stroke-width="1.6" fill="none" marker-end="url(#bad)"/>
     <text x="904" y="521">ownership refused</text>
   </g>
-  <text x="40" y="556" font-size="12.5" fill="#888888">idp-platform-lab, ADR-010. Run the before-state: github.com/ChenYuTingJerry/idp-platform-lab/tree/main/scenarios/ownership-conflict</text>
+  <text x="40" y="556" font-size="12.5" fill="#888888">idp-platform-lab. Run the before-state: github.com/ChenYuTingJerry/idp-platform-lab/tree/main/scenarios/ownership-conflict</text>
 </svg>
